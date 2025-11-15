@@ -24,6 +24,27 @@ const onClick = () => {
 export default function Index() {
     const [data, setData] = useState<Produto[] | null>(null);
 
+    const renderStars = (rate: number) => {
+        const stars = [];
+        const fullStars = Math.floor(rate);
+        const halfStar = rate - fullStars >= 0.5;
+
+        for (let i = 0; i < fullStars; i++) {
+            stars.push('★');
+        }
+
+        if (stars.length < 5) {
+            for (let i = stars.length; i < 5; i++) {
+                stars.push('☆');
+            }
+        }
+        return stars.join('');
+    }
+
+    function converterPrice(price: string): string {
+        return parseFloat(price).toFixed(2).replace('.', ',');
+    }
+
     const renderItem: ListRenderItem<Produto> = ({ item }) => {
         return (
             <View style={styles.card}>
@@ -64,6 +85,9 @@ export default function Index() {
                             }}>
                             {item.description}
                         </Text>
+                        <View>
+                            <Text style={{ fontSize: 12, fontWeight: "bold", color: "#ffa500" }}>Avaliação: {item.rating.rate} {renderStars(item.rating.rate)} <br />({item.rating.count} avaliações)</Text>
+                        </View>
                     </View>
                 </View>
                 <View
@@ -74,8 +98,8 @@ export default function Index() {
                     }}
                 />
                 <View>
-                    <Text style={{ textAlign: "center", marginTop: 8, fontWeight: "bold", marginBottom: 8 }}>R$ {item.price}</Text>
-                    <Button title={"Adicionar Item"} onPress={onClick} />
+                    <Text style={{ textAlign: "center", marginTop: 8, fontWeight: "bold", marginBottom: 8 }}>R$ {converterPrice(item.price)}</Text>
+                    <Button title={"Comprar!"} onPress={onClick} color={"#4CAF50"} />
                 </View>
             </View>
         )
@@ -113,7 +137,7 @@ export default function Index() {
 const styles = StyleSheet.create({
     card: {
         width: 250,
-        height: 400,
+        height: 450,
         paddingHorizontal: 12,
         paddingVertical: 8,
         borderWidth: 1,
